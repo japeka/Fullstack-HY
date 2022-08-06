@@ -3,12 +3,15 @@ import personService from './services/persons'
 import Persons from './components/Persons';
 import PersonForm from './components/PersonForm';
 import Filter from './components/Filter';
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     personService
@@ -35,6 +38,25 @@ const App = () => {
             setPersons(persons.map(person => person.id !== foundPerson.id ? person : p))
             setNewName('');
             setNewNumber('')
+            setNotification(
+              {
+                 mode: 'success',
+                 message: `Updated ${foundPerson.name}'s phone number` 
+              }
+            )
+            setTimeout(() => {
+              setNotification(null)
+            }, 5000)            
+        }).catch(error =>{
+          setNotification(
+            {
+               mode: 'error',
+               message: `Information of ${foundPerson.name} has already been removed from server` 
+            }
+          )
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)            
         })
       }
     }
@@ -49,6 +71,15 @@ const App = () => {
           setPersons([...persons, person])
           setNewName('');
           setNewNumber('')
+          setNotification(
+            {
+               mode: 'success',
+               message: `Added ${newName}` 
+            }
+          )
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)            
       })
   }
 
@@ -62,6 +93,15 @@ const App = () => {
             .then( per  => {
               const newPersons = persons.filter(p => p.id !== person.id)
               setPersons(newPersons)  
+              setNotification(
+                {
+                   mode: 'success',
+                   message: `Deleted ${person.name}` 
+                }
+              )
+              setTimeout(() => {
+                setNotification(null)
+              }, 5000)            
         })
       }
     }
@@ -74,6 +114,7 @@ const App = () => {
   return (
     <div>
       <h1>phonebook</h1>
+      <Notification notification={notification}/>
       <Filter 
         searchTerm={searchTerm} 
         handleChangeEvent={(e)=>{setSearchTerm(e.target.value)}} />       
