@@ -113,7 +113,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>phonebook</h1>
+      <h1>puhelinluettelo</h1>
       <Notification notification={notification}/>
       <Filter 
         searchTerm={searchTerm} 
