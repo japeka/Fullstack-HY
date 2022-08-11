@@ -23,9 +23,8 @@ const App = () => {
 
   const addPerson = (event) => { 
     event.preventDefault();
-    if(
-      !newName.trim().length || !newNumber.trim().length)
-        return alert(`Enter name and phone please`);
+    if(!newName.trim().length || !newNumber.trim().length) 
+        return alert("Enter name and number");
     
     const result = persons.filter(p => p.name === newName);
     if(result.length) {
@@ -38,24 +37,16 @@ const App = () => {
             setPersons(persons.map(person => person.id !== foundPerson.id ? person : p))
             setNewName('');
             setNewNumber('')
-            setNotification(
-              {
-                 mode: 'success',
-                 message: `Updated ${foundPerson.name}'s phone number` 
-              }
-            )
+            setNotification(['success',`Updated ${foundPerson.name}'s phone number`])
             setTimeout(() => {
               setNotification(null)
-            }, 5000)            
-        }).catch(error =>{
-          setNotification(
-            {
-               mode: 'error',
-               message: `Information of ${foundPerson.name} has already been removed from server` 
-            }
-          )
+            }, 2000)            
+        }).catch(error => {
+          setNotification(['error', error.response.data])
           setTimeout(() => {
             setNotification(null)
+            setNewName('');
+            setNewNumber('')
           }, 5000)            
         })
       }
@@ -71,44 +62,40 @@ const App = () => {
           setPersons([...persons, person])
           setNewName('');
           setNewNumber('')
-          setNotification(
-            {
-               mode: 'success',
-               message: `Added ${newName}` 
-            }
-          )
+          setNotification(['success',`Added ${newName}`])
           setTimeout(() => {
             setNotification(null)
-          }, 5000)            
+          }, 2000)            
+      }).catch(error => {
+        setNotification(['error', error.response.data])
+        setTimeout(() => {
+          setNotification(null)
+          setNewName('');
+          setNewNumber('')
+        }, 5000)            
       })
   }
 
   const deletePerson = (id) => {
     const person = persons.find(p => p.id === id);
     if(person) {
-      console.log(person);
       if (window.confirm(`Delete ${person.name}`)) {
         personService.
           deletePerson(person.id)
             .then( per  => {
               const newPersons = persons.filter(p => p.id !== person.id)
               setPersons(newPersons)  
-              setNotification(
-                {
-                   mode: 'success',
-                   message: `Deleted ${person.name}` 
-                }
-              )
+              setNotification(['success',`Deleted ${person.name}`])
               setTimeout(() => {
                 setNotification(null)
-              }, 5000)            
+              }, 2000)            
         })
       }
     }
   }
 
   const filteredPersons = searchTerm.length 
-      ? persons.filter(p => p.name.toLowerCase().startsWith(searchTerm.toLocaleLowerCase())) 
+      ? persons.filter(p => p.name.toLowerCase().includes(searchTerm.toLocaleLowerCase())) 
       : persons;
 
   return (

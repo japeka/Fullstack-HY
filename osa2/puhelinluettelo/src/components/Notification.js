@@ -5,8 +5,9 @@ const Notification = ({ notification }) => {
         return null
     }
     return (
-        <div className={ notification.mode}>
-          {notification.message }
+      notification.length > 1 &&
+        <div className={ notification[0]}>
+           { notification[0] === 'error' ? notification[1].error : notification[1] }
         </div>
     )
 }
