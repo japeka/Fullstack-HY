@@ -1,13 +1,9 @@
 import './App.css'
 
-import {
-  Route,
-  useMatch,
-  //Navigate,
-  /*Link,*/ Routes /*useNavigate, useMatch*/,
-} from 'react-router-dom'
+import { Route, useMatch, Routes } from 'react-router-dom'
 
 import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 import Menu from './components/Menu'
 import UserForm from './components/UserForm'
@@ -22,8 +18,6 @@ import { initializeBlog } from './reducers/blogDetailReducer'
 import { initializeUsers } from './reducers/usersReducer'
 import { initializeUser } from './reducers/userReducer'
 import { initializeUserByBlogs } from './reducers/userByBlogReducer'
-
-import { useDispatch } from 'react-redux'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -58,7 +52,6 @@ const App = () => {
   return (
     <div>
       <Menu />
-
       <Notification />
       <UserForm />
       <Routes>
