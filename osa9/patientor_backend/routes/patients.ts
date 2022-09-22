@@ -8,6 +8,14 @@ router.get("/", (_req, res) => {
   res.send(patientService.getPatients());
 });
 
+router.get("/:id", (_req, res) => {
+  if (!_req.params.id) {
+    res.status(400).json({ error: "Not found" });
+  }
+  const patient = patientService.getPatient(_req.params.id);
+  res.json(patient);
+});
+
 router.post("/", (_req, res) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

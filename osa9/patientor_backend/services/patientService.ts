@@ -1,21 +1,29 @@
 import patientData from "../data/patients.json";
 import { v1 as uuid } from "uuid";
 
-import { newPatient, PatientEntry, NewPatientEntry } from "../types";
+import { PatientEntry, NewPatientEntry, PublicPatient } from "../types";
 
-const getPatients = (): newPatient[] => {
-  return patientData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    occupation,
-  }));
+const getPatients = (): NewPatientEntry[] => {
+  const pats = patientData.map(
+    ({ id, name, dateOfBirth, ssn, gender, occupation }) => ({
+      id,
+      name,
+      dateOfBirth,
+      ssn,
+      gender,
+      occupation,
+    })
+  );
+  return pats;
+};
+
+const getPatient = (id: string): PublicPatient => {
+  const patient = patientData.find((p) => p.id === id);
+  return patient as PublicPatient;
 };
 
 const addPatient = (entry: NewPatientEntry): PatientEntry => {
   const newPatientEntry = {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     id: uuid(),
     ...entry,
   };
@@ -25,5 +33,6 @@ const addPatient = (entry: NewPatientEntry): PatientEntry => {
 
 export default {
   getPatients,
+  getPatient,
   addPatient,
 };
