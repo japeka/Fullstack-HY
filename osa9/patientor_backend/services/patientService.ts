@@ -1,24 +1,25 @@
-import patientData from "../data/patients.json";
+import patients from "../data/patients";
 import { v1 as uuid } from "uuid";
 
 import { PatientEntry, NewPatientEntry, PublicPatient } from "../types";
 
 const getPatients = (): NewPatientEntry[] => {
-  const pats = patientData.map(
-    ({ id, name, dateOfBirth, ssn, gender, occupation }) => ({
+  const pats = patients.map(
+    ({ id, name, dateOfBirth, ssn, gender, occupation, entries }) => ({
       id,
       name,
       dateOfBirth,
       ssn,
       gender,
       occupation,
+      entries,
     })
   );
   return pats;
 };
 
 const getPatient = (id: string): PublicPatient => {
-  const patient = patientData.find((p) => p.id === id);
+  const patient = patients.find((p) => p.id === id);
   return patient as PublicPatient;
 };
 
@@ -27,7 +28,7 @@ const addPatient = (entry: NewPatientEntry): PatientEntry => {
     id: uuid(),
     ...entry,
   };
-  patientData.push(newPatientEntry);
+  patients.push(newPatientEntry);
   return newPatientEntry;
 };
 
