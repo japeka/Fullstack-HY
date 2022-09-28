@@ -34,6 +34,7 @@ interface BaseEntry {
   diagnosisCodes: Array<Diagnosis["code"]> | undefined;
   discharge?: Discharge;
   employerName?: string;
+  sickLeave?: SickLeave;
 }
 
 interface HealthCheckEntry extends BaseEntry {
@@ -44,7 +45,6 @@ interface HealthCheckEntry extends BaseEntry {
 interface OccupationalHealthcareEntry extends BaseEntry {
   type: "OccupationalHealthcare";
   healthCheckRating?: HealthCheckRating;
-  sickLeave?: SickLeave;
 }
 
 interface HospitalEntry extends BaseEntry {
@@ -56,6 +56,18 @@ export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
+
+export type newEntry = {
+  date: string;
+  type: "HealthCheck" | "OccupationalHealthcare" | "Hospital";
+  specialist: string;
+  diagnosisCodes: Array<Diagnosis["code"]> | undefined;
+  description: string;
+  discharge: Discharge;
+  employerName: string;
+  sickLeave: SickLeave;
+  healthCheckRating: HealthCheckRating;
+};
 
 export interface Patient {
   id: string;

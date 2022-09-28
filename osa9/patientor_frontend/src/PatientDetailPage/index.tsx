@@ -1,11 +1,18 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography, Button } from "@material-ui/core";
+
+import axios from "axios";
+
 import { useStateValue } from "../state";
 import Male from "../assets/male.svg";
 import Female from "../assets/female.svg";
-import { CurrentPatient, Entry } from "../types";
+import { EntryFormValues } from "../AddEntryModal/AddEntryForm";
 
+import { apiBaseUrl } from "../constants";
+
+import { CurrentPatient, Entry } from "../types";
+import AddEntryModal from "../AddEntryModal";
 import HospitalEntry from "../components/HospitalEntry";
 import OccupationalHealthcare from "../components/OccupationalHealthcare";
 import HealthCheck from "../components/HealthCheck";
@@ -24,8 +31,11 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
 };
 
 const PatientDetailPage = (): JSX.Element => {
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string>();
+
   const { id } = useParams<{ id: string }>();
-  const [{ patients }] = useStateValue();
+  const [{ patients }, dispatch] = useStateValue();
   const [patient, setPatient] = React.useState<CurrentPatient>(null);
 
   React.useEffect(() => {
@@ -36,6 +46,64 @@ const PatientDetailPage = (): JSX.Element => {
     ) as CurrentPatient;
     setPatient(_patient);
   }, [id]);
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
+  const makeObject = (values: EntryFormValues, id?: string) => {
+    const newEntryObject = {
+      id,
+      date: values.date,
+      type: values.type,
+      specialist: values.specialist,
+      diagnosisCodes: [values.diagnosiscode],
+      description: values.description,
+      discharge: {
+        date: values.dischargedate,
+        criteria: values.dischargecriteria,
+      },
+      employerName: values.employerName,
+      sickLeave: {
+        startDate: values.sickLeaveStartDate,
+        endDate: values.sickLeaveEndDate,
+      },
+      healthCheckRating: values.healthCheckRating,
+    };
+    return newEntryObject;
+  };
+  const submitNewPatient = async (values: EntryFormValues) => {
+    try {
+      const requestObject = makeObject(values, id);
+      if (id && Object.keys(requestObject).length > 0) {
+        const { data: addedEntry } = await axios.post<EntryFormValues>(
+          `${apiBaseUrl}/patients/${id}/entries`,
+          requestObject
+        );
+        dispatch({
+          type: "ADD_PATIENT_ENTRY",
+          payload: { entry: addedEntry, id: id },
+        });
+        closeModal();
+      } else {
+        console.error("id or request object does not exists");
+        setError("id or request object does not exists");
+      }
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        console.error(e?.response?.data || "Unrecognized axios error");
+        setError(
+          String(e?.response?.data?.error) || "Unrecognized axios error"
+        );
+      } else {
+        console.error("Unknown error", e);
+        setError("Unknown error");
+      }
+    }
+  };
 
   return (
     <div className="app">
@@ -58,6 +126,16 @@ const PatientDetailPage = (): JSX.Element => {
               occupation: {patient.occupation}
             </Typography>
             <br />
+            <AddEntryModal
+              modalOpen={modalOpen}
+              onSubmit={submitNewPatient}
+              error={error}
+              onClose={closeModal}
+            />
+            <Button variant="contained" onClick={() => openModal()}>
+              Add New Entry
+            </Button>
+
             <Typography variant="h6">entries</Typography>
             <div>
               {patient.entries.map((entry: Entry) => (
