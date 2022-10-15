@@ -7,12 +7,14 @@ const { connectToDatabase } = require("./util/db");
 const blogsRouter = require("./controllers/blogs");
 const blogUsersRouter = require("./controllers/blogusers");
 const loginRouter = require("./controllers/login");
+const authorsRouter = require("./controllers/authors");
 
 app.use(express.json());
 
 app.use("/api/blogs", blogsRouter);
 app.use("/api/blogusers", blogUsersRouter);
 app.use("/api/login", loginRouter);
+app.use("/api/authors", authorsRouter);
 
 const unknownEndpoint = (request, response) => {
   cd;
