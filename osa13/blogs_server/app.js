@@ -17,7 +17,6 @@ app.use("/api/login", loginRouter);
 app.use("/api/authors", authorsRouter);
 
 const unknownEndpoint = (request, response) => {
-  cd;
   response.status(404).send({ error: "unknown endpoint" });
 };
 app.use(unknownEndpoint);
@@ -26,6 +25,10 @@ const errorHandler = (error, request, response, next) => {
   console.error(error.message);
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "SequelizeValidationError") {
+    return response
+      .status(400)
+      .send({ error: "year given not within range: 1991-2022" });
   }
   next(error);
 };
