@@ -27,11 +27,11 @@ Blog.init(
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
-    bloguserId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: "blogusers", key: "id" },
-    },
+    // bloguserId: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false,
+    //   references: { model: "blogusers", key: "id" },
+    // },
     year: {
       type: DataTypes.INTEGER,
       validate: {

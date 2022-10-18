@@ -1,12 +1,20 @@
 const router = require("express").Router();
-
-const { Bloguser, Blog } = require("../models");
+const { Op } = require("sequelize");
+const { Bloguser, Blog, ReadingLists } = require("../models");
 
 router.get("/", async (req, res) => {
+  const where = {};
+  if (req.query.name) {
+    where.name = {
+      [Op.substring]: req.query.name,
+    };
+  }
+
   const users = await Bloguser.findAll({
     include: {
       model: Blog,
     },
+    where,
   });
   res.json(users);
 });
@@ -30,7 +38,15 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const user = await Bloguser.findByPk(req.params.id);
+  const user = await Bloguser.findByPk(req.params.id, {
+    attributes: { exclude: ["id", "createdAt", "updatedAt"] },
+    include: [
+      {
+        model: Blog,
+        attributes: { exclude: ["bloguserId", "createdAt", "updatedAt"] },
+      },
+    ],
+  });
   if (user) {
     res.json(user);
   } else {
