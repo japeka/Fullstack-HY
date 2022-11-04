@@ -30,7 +30,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <BirthyearForm names={authors.map((a) => a.name)} />
+      {props.token && <BirthyearForm names={authors.map((a) => a.name)} />}
     </div>
   );
 };

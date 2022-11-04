@@ -1,17 +1,51 @@
 import { ALL_BOOKS } from "../queries";
-import { useQuery } from "@apollo/client";
+import { useState, useEffect } from "react";
+import { useQuery, useLazyQuery } from "@apollo/client";
+
 const Books = (props) => {
   const result = useQuery(ALL_BOOKS);
-  if (result.loading) return <div>Loading...</div>;
-  if (!props.show) {
+  const [getBooksByGenre, genreResult] = useLazyQuery(ALL_BOOKS, {
+    fetchPolicy: "no-cache",
+  });
+  const [genre, setGenre] = useState("all genres");
+  const [books, setBooks] = useState(null);
+
+  useEffect(() => {
+    if (result.data) {
+      setBooks(result.data.allBooks);
+    }
+  }, [result.data]);
+
+  useEffect(() => {
+    if (genreResult.data) {
+      setBooks(genreResult.data.allBooks);
+    }
+  }, [genreResult.data]);
+
+  if (!props.show || !books) {
     return null;
   }
 
-  //const books = [];
+  if (result.loading || genreResult.loading) return <div>Loading...</div>;
+
+  const { allBooks } = result.data;
+  const genres = [...new Set(allBooks.flatMap((b) => b.genres))].concat(
+    "all genres"
+  );
+
+  const handleClick = (genre) => {
+    setGenre(genre);
+    if (genre === "all genres") {
+      setBooks(result.data.allBooks);
+      return;
+    }
+    getBooksByGenre({ variables: { genre: genre } });
+  };
+
   return (
     <div>
       <h2>books</h2>
-
+      <p>books of {genre} genre</p>
       <table>
         <tbody>
           <tr>
@@ -19,15 +53,22 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {result.data.allBooks.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author}</td>
-              <td>{a.published}</td>
+          {books.map((b) => (
+            <tr key={b.title}>
+              <td>{b.title}</td>
+              <td>{b.author.name}</td>
+              <td>{b.published}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div>
+        {genres.map((genre) => (
+          <button key={genre} onClick={() => handleClick(genre)}>
+            {genre}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

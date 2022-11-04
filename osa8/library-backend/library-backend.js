@@ -75,8 +75,12 @@ const resolvers = {
       return context.currentUser;
     },
     allBooks: async (root, args) => {
-      if (!args.author && !args.genre)
-        return await Book.find({}).populate("author");
+      console.log("args", args);
+      if (!args.author && !args.genre) {
+        const books = await Book.find({}).populate("author");
+        console.log(books);
+        return books;
+      }
       if (args.author && !args.genre) {
         const author = await Author.findOne({ name: args.author });
         if (author)
@@ -153,7 +157,7 @@ const resolvers = {
 
       const book = new Book({
         ...args,
-        author: author.id,
+        author,
       });
       try {
         await book.save();
@@ -168,7 +172,10 @@ const resolvers = {
       }
 
       const author = await Author.findOne({ name: args.name });
+      if (!author) return null;
+
       author.born = args.setBornTo;
+
       try {
         await author.save();
         return author;
