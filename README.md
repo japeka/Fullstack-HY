@@ -1,5 +1,18 @@
 # Fullstack-HY
-Fullstackopen-hy course (fullstackopen.com)
+Fullstackopen - 2022
 
-## Completed: 0,1,2,3,4,5,6,7,9,13
-## In Progress: 8
+## Status
+- [x] 0
+- [x] 1
+- [x] 2
+- [x] 3
+- [x] 4
+- [x] 5
+- [x] 6
+- [x] 7
+- [ ] 8
+- [x] 9
+- [ ] 10
+- [ ] 11
+- [ ] 12
+- [ ] 13
