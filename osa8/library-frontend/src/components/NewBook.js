@@ -17,7 +17,6 @@ const NewBook = (props) => {
   }
   const submit = async (event) => {
     event.preventDefault();
-    console.log("here 1");
     addBook({
       variables: {
         title,
@@ -27,7 +26,6 @@ const NewBook = (props) => {
       },
       refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     });
-    console.log("here 2");
     setTitle("");
     setPublished("");
     setAuthor("");
