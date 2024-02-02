@@ -18,4 +18,4 @@ Fullstackopen - 2022
 - [x] 11
 - [x] 12
 - [x] 13
-- [x] Project work (10 ETCS)
+- [x] Project work (Finnish-Estonian Dictionary - 10 ETCS)
